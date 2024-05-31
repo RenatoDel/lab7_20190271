@@ -4,10 +4,7 @@ import com.example.lab7_20190271.entity.Users;
 import com.example.lab7_20190271.repository.UsersRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +81,29 @@ public class UsersController {
             rpta.put("result", "error");
             rpta.put("msg", "debe enviar un usuario con ID");
             return ResponseEntity.badRequest().body(rpta);
+        }
+    }
+    // /Product?id
+    @DeleteMapping("")
+    public ResponseEntity<HashMap<String, Object>> borrar(@RequestParam("Id") String IdStr){
+
+        try{
+            int Id = Integer.parseInt(IdStr);
+
+            HashMap<String, Object> rpta = new HashMap<>();
+
+            Optional<Users> byId = usersRepository.findById(Id);
+            if(byId.isPresent()){
+                usersRepository.deleteById(Id);
+                rpta.put("result","ok");
+            }else{
+                rpta.put("result","no ok");
+                rpta.put("msg","el ID enviado no existe");
+            }
+
+            return ResponseEntity.ok(rpta);
+        }catch (NumberFormatException e){
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
